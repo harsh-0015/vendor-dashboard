@@ -20,7 +20,7 @@ const App = () => (
           <div className="flex min-h-screen w-full">
             <VendorSidebar />
             <main className="flex-1">
-              <div className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 lg:hidden">
+              <div className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4">
                 <SidebarTrigger />
                 <h2 className="font-semibold">Vendor Portal</h2>
               </div>

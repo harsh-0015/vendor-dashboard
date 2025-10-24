@@ -1,7 +1,9 @@
-import { Bell, Package, MessageSquare, DollarSign, AlertCircle } from "lucide-react";
+import { Bell, Package, MessageSquare, DollarSign, AlertCircle, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface Notification {
   id: string;
@@ -79,6 +81,11 @@ const colorMap = {
 
 export function NotificationPanel() {
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Show first 3 notifications when collapsed
+  const visibleNotifications = isOpen ? notifications : notifications.slice(0, 3);
+  const hasMore = notifications.length > 3;
 
   return (
     <Card>
@@ -95,10 +102,10 @@ export function NotificationPanel() {
           )}
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <ScrollArea className="h-[400px]">
-          <div className="space-y-1 p-4 pt-0">
-            {notifications.map((notification) => {
+      <CardContent className="p-4 pt-0">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="space-y-1">
+            {visibleNotifications.map((notification) => {
               const Icon = iconMap[notification.type];
               return (
                 <div
@@ -121,7 +128,25 @@ export function NotificationPanel() {
               );
             })}
           </div>
-        </ScrollArea>
+          
+          {hasMore && (
+            <CollapsibleTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="w-full mt-2 flex items-center justify-center gap-2"
+              >
+                <span className="text-sm">
+                  {isOpen ? "Show Less" : `Show ${notifications.length - 3} More`}
+                </span>
+                <ChevronDown 
+                  className={`h-4 w-4 transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          )}
+        </Collapsible>
       </CardContent>
     </Card>
   );
