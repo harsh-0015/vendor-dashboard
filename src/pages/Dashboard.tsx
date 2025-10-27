@@ -1,11 +1,17 @@
-import { ShoppingBag, DollarSign, Users, TrendingUp, Star, PlusCircle, Package as PackageIcon, MessageCircle, BarChart, Wallet, Settings as SettingsIcon } from "lucide-react";
+import { ShoppingBag, DollarSign, Users, TrendingUp, Star, PlusCircle, Package as PackageIcon, MessageCircle, Wallet, Settings as SettingsIcon } from "lucide-react";
 import { KPICard } from "@/components/KPICard";
 import { NotificationPanel } from "@/components/NotificationPanel";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend, Bar, BarChart } from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 const salesData = [
   { day: "Mon", sales: 4200, orders: 45 },
@@ -46,6 +52,30 @@ const quickActions = [
   { title: "Store Settings", icon: SettingsIcon, action: "settings" },
 ];
 
+
+// Bar chart data for revenue vs orders comparison
+const chartData = [
+  { day: "Mon", revenue: 1860, orders: 45 },
+  { day: "Tue", revenue: 3050, orders: 62 },
+  { day: "Wed", revenue: 2370, orders: 51 },
+  { day: "Thu", revenue: 3730, orders: 78 },
+  { day: "Fri", revenue: 4460, orders: 92 },
+  { day: "Sat", revenue: 4830, orders: 98 },
+  { day: "Sun", revenue: 3570, orders: 71 },
+];
+
+const chartConfig = {
+  revenue: {
+    label: "Revenue",
+    color: "var(--chart-1)",
+  },
+  orders: {
+    label: "Orders",
+    color: "var(--chart-2)",
+  },
+} satisfies ChartConfig;
+
+
 export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
@@ -53,7 +83,7 @@ export default function Dashboard() {
       <div className="border-b bg-card px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Hey Vendor Name, welcome back 👋</h1>
+            <h1 className="text-2xl font-sans text-foreground">Hey Vendor Name, welcome back 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">Here's how your store performed this week.</p>
           </div>
           <Select defaultValue="7days">
@@ -347,6 +377,42 @@ export default function Dashboard() {
           {/* Right Sidebar */}
           <div className="lg:col-span-4 space-y-6">
             <NotificationPanel />
+
+            {/* Bar Chart - Multiple for Revenue vs Orders */}
+  <Card>
+    <CardHeader>
+      <CardTitle>Revenue vs Orders💲</CardTitle>
+      <CardDescription>Weekly performance comparison</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <ChartContainer config={chartConfig}>
+        <BarChart accessibilityLayer data={chartData} height={300}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="day"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value}
+          />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent indicator="dashed" />}
+          />
+          <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={4} />
+          <Bar dataKey="orders" fill="hsl(var(--primary))" radius={4} />
+        </BarChart>
+      </ChartContainer>
+    </CardContent>
+    <CardFooter className="flex-col items-start gap-2 text-sm">
+      <div className="flex gap-2 leading-none font-medium">
+        Revenue up by 15% this week <TrendingUp className="h-4 w-4" />
+      </div>
+      <div className="text-muted-foreground leading-none">
+        Showing revenue and order count for the current week
+      </div>
+    </CardFooter>
+  </Card>
           </div>
         </div>
       </div>

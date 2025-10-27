@@ -84,8 +84,8 @@ export function NotificationPanel() {
   const [isOpen, setIsOpen] = useState(false);
   
   // Show first 3 notifications when collapsed
-  const visibleNotifications = isOpen ? notifications : notifications.slice(0, 3);
-  const hasMore = notifications.length > 3;
+  const visibleNotifications = isOpen ? notifications : notifications.slice(0, 2);
+  const hasMore = notifications.length > 2;
 
   return (
     <Card>
@@ -136,7 +136,7 @@ export function NotificationPanel() {
                 className="w-full mt-2 flex items-center justify-center gap-2"
               >
                 <span className="text-sm">
-                  {isOpen ? "Show Less" : `Show ${notifications.length - 3} More`}
+                  {isOpen ? "Show Less" : `Show ${notifications.length - 2} More`}
                 </span>
                 <ChevronDown 
                   className={`h-4 w-4 transition-transform duration-200 ${
