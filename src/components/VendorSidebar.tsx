@@ -1,21 +1,6 @@
-import { Home, ShoppingBag, Package, Users, BarChart2, MessageCircle, Wallet, Settings, ChevronDown, UserCircle, LogOut } from "lucide-react";
+import { Home, ShoppingBag, Package, Users, BarChart2, MessageCircle, Wallet, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarFooter,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -29,94 +14,58 @@ const menuItems = [
 ];
 
 export function VendorSidebar() {
+  const [activeMenu, setActiveMenu] = useState("dashboard");
+
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      {/* HEADER - Vendor Portal Dropdown */}
-      <SidebarHeader className="border-b border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="w-full h-auto py-3">
-                  <div className="flex items-center gap-2 flex-1">
-                    <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center shrink-0">
-                      <span className="text-primary-foreground font-bold text-lg">V</span>
-                    </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <h2 className="font-semibold text-sidebar-foreground text-sm truncate">Vendor Portal</h2>
-                      <p className="text-xs text-muted-foreground truncate">Dashboard</p>
-                    </div>
-                  </div>
-                  <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform duration-200" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[240px]" align="start" side="bottom">
-                {menuItems.map((item) => (
-                  <DropdownMenuItem key={item.title} asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/"}
-                      className={({ isActive }) =>
-      `flex items-center gap-3 cursor-pointer w-full rounded-md px-3 py-2 transition-all duration-200
-       ${isActive ? "bg-blue-100 text-black font-semibold" : "text-black"}
-       hover:bg-blue-800 hover:text-black`
-    }
-  >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      
-      <SidebarContent>
-        {/* Empty content - navigation is now only in the dropdown */}
-        <div className="flex-1" />
-      </SidebarContent>
-      {/* FOOTER - User Profile Section */}
-      <SidebarFooter className="border-t border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="w-full h-auto py-3">
-                  <div className="flex items-center gap-3 flex-1">
-                    {/* User Avatar */}
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0 ring-2 ring-primary/20">
-                      <Users className="h-5 w-5 text-white" />
-                    </div>
-                    {/* User Info */}
-                    <div className="flex-1 text-left min-w-0">
-                      <p className="font-semibold text-sm text-sidebar-foreground truncate">John Doe</p>
-                      <p className="text-xs text-muted-foreground truncate">john@vendor.com</p>
-                    </div>
-                  </div>
-                  <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform duration-200" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[240px]" align="start" side="top">
-                <DropdownMenuItem className="cursor-pointer">
-                  <UserCircle className="h-4 w-4 mr-3" />
-                  <span>View Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Settings className="h-4 w-4 mr-3" />
-                  <span>Account Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-                  <LogOut className="h-4 w-4 mr-3" />
-                  <span>Log Out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+    <div className="fixed top-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col h-screen ">
+      {/* Header */}
+      <div className="p-6">
+        <div className="flex items-center gap-2">
+          <div className="h-10 w-10 rounded-lg bg-purple-600 flex items-center justify-center">
+            <span className="text-white font-bold text-xl">V</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">Vendor Portal</h1>
+            <p className="text-xs text-gray-400">Dashboard</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-4">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.title}
+            to={item.url}
+            end={item.url === "/"}
+            onClick={() => setActiveMenu(item.title.toLowerCase())}
+            className={({ isActive }) =>
+              `flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
+                isActive
+                  ? "bg-gray-700 bg-opacity-50 font-medium"
+                  : "hover:bg-gray-700 hover:bg-opacity-30"
+              }`
+            }
+          >
+            <item.icon className="w-5 h-5" />
+            <span>{item.title}</span>
+          </NavLink>
+        ))}
+      </nav>
+
+      {/* Help Card */}
+      <div className="px-6 pt-0 mb-auto">
+        <div className="bg-gradient-to-br from-purple-600 to-pink-500 rounded-lg p-4">
+          <div className="w-8 h-8 bg-white rounded-lg mb-2 flex items-center justify-center">
+            <span className="text-purple-600 font-bold text-sm">?</span>
+          </div>
+          <h3 className="font-bold mb-1">Need help?</h3>
+          <p className="text-xs mb-3 opacity-90">Please check our docs</p>
+          <button className="bg-white text-gray-800 text-sm px-4 py-2 rounded-lg font-medium w-full hover:bg-gray-100 transition-colors">
+            Documentation
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

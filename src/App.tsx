@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { Bell, Settings, ChevronDown, LogOut } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import ChatWidget from "./components/ChatWidget";
 
 const queryClient = new QueryClient();
 
@@ -75,7 +76,7 @@ const VendorHeader = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('rememberMe');
     sessionStorage.removeItem('user');
-    window.location.href = '/login'; // Adjust to your login route
+    window.location.href = '/login'; // Adjustment accordingly
   };
 
   return (
@@ -164,9 +165,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SidebarProvider>
-          <div className="flex min-h-screen w-full">
+          <div className=" min-h-screen flex">
             <VendorSidebar />
-            <main className="flex-1">
+            <main className="flex-1 ml-64">
               <VendorHeader />
               <Routes>
                 <Route path="/" element={<Dashboard />} />
@@ -181,6 +182,8 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+
+              <ChatWidget />
             </main>
           </div>
         </SidebarProvider>

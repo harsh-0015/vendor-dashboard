@@ -12,6 +12,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import * as React from "react";
 
 const salesData = [
   { day: "Mon", sales: 4200, orders: 45 },
@@ -77,6 +79,7 @@ const chartConfig = {
 
 
 export default function Dashboard() {
+  const [timeRange, setTimeRange] = React.useState("7days");
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -86,7 +89,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-sans text-foreground">Hey Vendor Name, welcome back 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">Here's how your store performed this week.</p>
           </div>
-          <Select defaultValue="7days">
+          {/* <Select defaultValue="7days">
             <SelectTrigger className="w-[180px]">
               <SelectValue />
             </SelectTrigger>
@@ -95,7 +98,37 @@ export default function Dashboard() {
               <SelectItem value="30days">Last 30 Days</SelectItem>
               <SelectItem value="custom">Custom Range</SelectItem>
             </SelectContent>
-          </Select>
+          </Select>  */}
+
+          <div className="flex gap-2">
+  {/* Toggle buttons for desktop */}
+  <ToggleGroup
+    type="single"
+    value={timeRange}
+    onValueChange={(value) => {
+      if (value) setTimeRange(value);
+    }}
+    variant="outline"
+    size="default"
+    className="hidden md:flex"
+  >
+    <ToggleGroupItem value="7days">Last 7 Days</ToggleGroupItem>
+    <ToggleGroupItem value="30days">Last 30 Days</ToggleGroupItem>
+    <ToggleGroupItem value="90days">Last 3 Months</ToggleGroupItem>
+  </ToggleGroup>
+
+  {/* Select dropdown for mobile */}
+  <Select value={timeRange} onValueChange={setTimeRange}>
+    <SelectTrigger className="w-[180px] md:hidden">
+      <SelectValue placeholder="Select time range" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="7days">Last 7 Days</SelectItem>
+      <SelectItem value="30days">Last 30 Days</SelectItem>
+      <SelectItem value="90days">Last 3 Months</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
         </div>
       </div>
 
@@ -184,8 +217,8 @@ export default function Dashboard() {
                   <AreaChart data={salesData}>
                     <defs>
                       <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#9333EA" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#EC4899" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -201,7 +234,7 @@ export default function Dashboard() {
                     <Area
                       type="monotone"
                       dataKey="sales"
-                      stroke="hsl(var(--primary))"
+                      stroke="hsl(#salesLineGradient)"
                       strokeWidth={2}
                       fill="url(#salesGradient)"
                     />
@@ -287,7 +320,9 @@ export default function Dashboard() {
                       </div>
                       <div className="flex items-center gap-4">
                         <p className="font-bold text-lg">{product.revenue}</p>
-                        <Badge variant={product.status === "available" ? "default" : "secondary"}>
+                        <Badge
+                        className="bg-gradient-to-br from-purple-600 to-pink-500 text-white border-0"
+                        >
                           {product.status === "available" ? "Available" : "Unavailable"}
                         </Badge>
                       </div>
@@ -325,15 +360,8 @@ export default function Dashboard() {
                       </div>
                       <div className="flex items-center gap-4">
                         <p className="font-bold">{order.total}</p>
-                        <Badge
-                          variant={
-                            order.status === "completed"
-                              ? "default"
-                              : order.status === "pending"
-                              ? "secondary"
-                              : "destructive"
-                          }
-                        >
+                        <Badge className="bg-gradient-to-br from-purple-600 to-pink-500 text-white border-0 capitalize"
+                          >
                           {order.status}
                         </Badge>
                         <div className="flex gap-2">
@@ -399,8 +427,17 @@ export default function Dashboard() {
             cursor={false}
             content={<ChartTooltipContent indicator="dashed" />}
           />
-          <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={4} />
-          <Bar dataKey="orders" fill="hsl(var(--primary))" radius={4} />
+          <defs>
+  <linearGradient id="purplePinkGradient" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#9333ea" /> {/* from-purple-600 */}
+    <stop offset="100%" stopColor="#ec4899" /> {/* to-pink-500 */}
+  </linearGradient>
+</defs>
+
+<Bar dataKey="revenue" fill="url(#purplePinkGradient)" radius={4} />
+<Bar dataKey="orders" fill="url(#purplePinkGradient)" radius={4} />
+
+          
         </BarChart>
       </ChartContainer>
     </CardContent>
