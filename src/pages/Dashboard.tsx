@@ -365,7 +365,9 @@ export default function Dashboard() {
                           {order.status}
                         </Badge>
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" // View buttons in Recent orders section
+                          className=" text-gray-600 border border-gray-300 transition-all duration-300 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:text-white"
+                          >
                             View
                           </Button>
                           <Button variant="ghost" size="sm">
@@ -427,15 +429,15 @@ export default function Dashboard() {
             cursor={false}
             content={<ChartTooltipContent indicator="dashed" />}
           />
-          <defs>
-  <linearGradient id="purplePinkGradient" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stopColor="#9333ea" /> {/* from-purple-600 */}
-    <stop offset="100%" stopColor="#ec4899" /> {/* to-pink-500 */}
-  </linearGradient>
-</defs>
 
-<Bar dataKey="revenue" fill="url(#purplePinkGradient)" radius={4} />
-<Bar dataKey="orders" fill="url(#purplePinkGradient)" radius={4} />
+          <defs>
+            <linearGradient id="purplePinkGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#9333ea" /> {/* from-purple-600 */}
+              <stop offset="100%" stopColor="#ec4899" /> {/* to-pink-500 */}
+            </linearGradient>
+        </defs>
+        <Bar dataKey="revenue" fill="url(#purplePinkGradient)" radius={4} />
+        <Bar dataKey="orders" fill="url(#purplePinkGradient)" radius={4} />
 
           
         </BarChart>
