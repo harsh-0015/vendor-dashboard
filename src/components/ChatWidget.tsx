@@ -1,6 +1,6 @@
 // ChatWidget.tsx (React + Tailwind) — UI-only
 import { useState } from "react";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, X, Paperclip, Maximize2, Minimize2 } from "lucide-react";
 
 const sampleMessages = [
   { id: 1, from: "bot", text: "Hi! Need help with the dashboard?" },
@@ -12,6 +12,7 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState(sampleMessages);
   const [input, setInput] = useState("");
+  const[isMaximized ,setIsMaximized] = useState(false);
 
   const send = () => {
     if (!input.trim()) return;
@@ -39,7 +40,13 @@ export default function ChatWidget() {
 
       {/* Panel */}
       {open && (
-        <div className="fixed right-6 bottom-20 z-50 w-[360px] max-w-full rounded-xl bg-white shadow-2xl ring-1 ring-black/5 overflow-hidden">
+        <div 
+  className={`fixed z-50 rounded-xl bg-white shadow-2xl ring-1 ring-black/5 overflow-hidden transition-all duration-300 ${
+    isMaximized 
+      ? "bottom-10 right-10 w-[80vw] h-[80vh]"  // customization for chat area maximize
+      : "right-6 bottom-20 w-[360px] max-w-full"
+  }`}
+>
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-br from-purple-600 to-pink-500 text-white">
             <div className="flex items-center gap-3">
@@ -49,13 +56,26 @@ export default function ChatWidget() {
                 <div className="text-xs opacity-80">This is a UI-only mock</div>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 rounded-md hover:bg-white/20">
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1">
+  <button 
+    onClick={() => setIsMaximized(!isMaximized)} 
+    aria-label={isMaximized ? "Minimize chat" : "Maximize chat"} 
+    className="p-1 rounded-md hover:bg-white/20"
+  >
+    {isMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+  </button>
+  <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 rounded-md hover:bg-white/20">
+    <X className="w-4 h-4" />
+  </button>
+</div>
           </div>
 
           {/* Messages */}
-          <div className="max-h-72 overflow-y-auto px-4 py-3 space-y-3 bg-gradient-to-b from-white to-white">
+          <div 
+  className={`overflow-y-auto px-4 py-3 space-y-3 bg-gradient-to-b from-white to-white ${
+    isMaximized ? "h-[calc(100vh-180px)]" : "max-h-72"
+  }`}
+>
             {messages.map((m) => (
               <div
                 key={m.id}
@@ -76,6 +96,11 @@ export default function ChatWidget() {
 
           {/* Input */}
           <div className="px-3 py-3 border-t flex items-center gap-2">
+            <button className="p-2 rounded-md hover:bg-gray-100 transition "
+            aria-label="Attach image"
+            >
+              <Paperclip className="w-5 h-5 text-gray-500"/>
+            </button>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}

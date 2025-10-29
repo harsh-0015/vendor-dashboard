@@ -1,12 +1,13 @@
 import { Home, ShoppingBag, Package, Users, BarChart2, MessageCircle, Wallet, Settings } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink , useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Orders", url: "/orders", icon: ShoppingBag },
   { title: "Products", url: "/products", icon: Package },
-  { title: "Customers", url: "/customers", icon: Users },
+  { title: "Customers", url: "/Customers", icon: Users },
   { title: "Analytics", url: "/analytics", icon: BarChart2 },
   { title: "Messages", url: "/messages", icon: MessageCircle },
   { title: "Earnings", url: "/earnings", icon: Wallet },
@@ -15,18 +16,21 @@ const menuItems = [
 
 export function VendorSidebar() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
+  const navigate = useNavigate();
 
   return (
     <div className="fixed top-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col h-screen ">
       {/* Header */}
       <div className="p-6">
-        <div className="flex items-center gap-2">
+        <div 
+        onClick={() => navigate('/')} // navigation to home page across the project 
+        className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity select-none">
           <div className="h-10 w-10 rounded-lg bg-purple-600 flex items-center justify-center">
             <span className="text-white font-bold text-xl">V</span>
           </div>
           <div>
             <h1 className="text-xl font-bold">Vendor Portal</h1>
-            <p className="text-xs text-gray-400">Dashboard</p>
+            {/* <p className="text-xs text-gray-400">Dashboard</p> */}
           </div>
         </div>
       </div>
@@ -54,7 +58,7 @@ export function VendorSidebar() {
       </nav>
 
       {/* Help Card */}
-      <div className="px-6 pt-0 mb-auto">
+      {/* <div className="px-6 pt-0 mb-auto">
         <div className="bg-gradient-to-br from-purple-600 to-pink-500 rounded-lg p-4">
           <div className="w-8 h-8 bg-white rounded-lg mb-2 flex items-center justify-center">
             <span className="text-purple-600 font-bold text-sm">?</span>
@@ -65,7 +69,7 @@ export function VendorSidebar() {
             Documentation
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

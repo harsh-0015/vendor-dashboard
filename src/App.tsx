@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import { Bell, Settings, ChevronDown, LogOut } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ChatWidget from "./components/ChatWidget";
+import CustomersPage from "./pages/CustomersPage";
 
 const queryClient = new QueryClient();
 
@@ -174,7 +175,7 @@ const App = () => (
                 {/* Placeholder routes for other pages */}
                 <Route path="/orders" element={<Dashboard />} />
                 <Route path="/products" element={<Dashboard />} />
-                <Route path="/customers" element={<Dashboard />} />
+                <Route path="/customers" element={<CustomersPage />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/messages" element={<Dashboard />} />
                 <Route path="/earnings" element={<Dashboard />} />
