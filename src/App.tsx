@@ -168,7 +168,7 @@ const App = () => (
         <SidebarProvider>
           <div className=" min-h-screen flex">
             <VendorSidebar />
-            <main className="flex-1 ml-64">
+            <main className="ml-64">
               <VendorHeader />
               <Routes>
                 <Route path="/" element={<Dashboard />} />

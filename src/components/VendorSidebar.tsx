@@ -19,9 +19,9 @@ export function VendorSidebar() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed top-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col h-screen ">
+    <div className="fixed inset-y-0 left-0 flex flex-col w-64 min-h-screen text-white bg-gradient-to-b from-gray-900 to-gray-800 z-20">
       {/* Header */}
-      <div className="p-6">
+      <div className="p-6"> 
         <div 
         onClick={() => navigate('/')} // navigation to home page across the project 
         className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity select-none">
@@ -36,7 +36,7 @@ export function VendorSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4">
+      <nav className="flex-1 px-4 overflow-y-auto pb-6">
         {menuItems.map((item) => (
           <NavLink
             key={item.title}

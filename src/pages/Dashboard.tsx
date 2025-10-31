@@ -1,136 +1,77 @@
-import { ShoppingBag, DollarSign, Users, TrendingUp, Star, PlusCircle, Package as PackageIcon, MessageCircle, Wallet, Settings as SettingsIcon } from "lucide-react";
+import { ShoppingBag, DollarSign, Users, TrendingUp } from "lucide-react";
 import { KPICard } from "@/components/KPICard";
 import { NotificationPanel } from "@/components/NotificationPanel";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend, Bar, BarChart } from "recharts";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import * as React from "react";
 
-const salesData = [
-  { day: "Mon", sales: 4200, orders: 45 },
-  { day: "Tue", sales: 5800, orders: 62 },
-  { day: "Wed", sales: 4600, orders: 51 },
-  { day: "Thu", sales: 7100, orders: 78 },
-  { day: "Fri", sales: 8500, orders: 92 },
-  { day: "Sat", sales: 9200, orders: 98 },
-  { day: "Sun", sales: 6800, orders: 71 },
-];
+// Import components
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { StoreRating } from "@/components/StoreRating";
+import { SalesChart } from "@/components/charts/SalesChart";
+import { OrderStatusChart } from "@/components/charts/OrderStatusChart";
+import { ProductList } from "@/components/ProductList";
+import { RecentOrders } from "@/components/RecentOrders";
+import { QuickActions } from "@/components/QuickActions";
 
-const orderStatusData = [
-  { name: "Completed", value: 798, color: "hsl(var(--success))" },
-  { name: "Pending", value: 312, color: "hsl(var(--warning))" },
-  { name: "Cancelled", value: 120, color: "hsl(var(--destructive))" },
-];
+// Import constants
+import {
+  salesData,
+  orderStatusData,
+  topProducts,
+  recentOrders,
+  chartData,
+  chartConfig,
+  kpiData,
+  quickActions,
+  timeRangeOptions,
+} from "@/constants/dashboardData";
 
-const topProducts = [
-  { name: "Margherita Pizza", orders: 120, revenue: "$1,560", status: "available" },
-  { name: "Cheeseburger", orders: 95, revenue: "$980", status: "unavailable" },
-  { name: "Pasta Alfredo", orders: 80, revenue: "$870", status: "available" },
-  { name: "Caesar Salad", orders: 65, revenue: "$520", status: "available" },
-];
-
-const recentOrders = [
-  { id: "#12345", customer: "John Doe", total: "$32.50", status: "completed" },
-  { id: "#12346", customer: "Emma Smith", total: "$24.80", status: "pending" },
-  { id: "#12347", customer: "Michael Brown", total: "$45.20", status: "cancelled" },
-  { id: "#12348", customer: "Sarah Wilson", total: "$28.90", status: "completed" },
-];
-
-const quickActions = [
-  { title: "Add Product", icon: PlusCircle, action: "add-product" },
-  { title: "Manage Orders", icon: ShoppingBag, action: "orders" },
-  { title: "Open Messages", icon: MessageCircle, action: "messages" },
-  { title: "View Analytics", icon: BarChart, action: "analytics" },
-  { title: "Check Earnings", icon: Wallet, action: "earnings" },
-  { title: "Store Settings", icon: SettingsIcon, action: "settings" },
-];
-
-
-// Bar chart data for revenue vs orders comparison
-const chartData = [
-  { day: "Mon", revenue: 1860, orders: 45 },
-  { day: "Tue", revenue: 3050, orders: 62 },
-  { day: "Wed", revenue: 2370, orders: 51 },
-  { day: "Thu", revenue: 3730, orders: 78 },
-  { day: "Fri", revenue: 4460, orders: 92 },
-  { day: "Sat", revenue: 4830, orders: 98 },
-  { day: "Sun", revenue: 3570, orders: 71 },
-];
-
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "var(--chart-1)",
-  },
-  orders: {
-    label: "Orders",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
-
+// Icon mapping for KPIs
+const kpiIcons = {
+  Orders: ShoppingBag,
+  Sales: DollarSign,
+  Customers: Users,
+  "Net Revenue": TrendingUp,
+};
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = React.useState("7days");
+
+  // Handlers for user interactions
+  const handleViewOrder = React.useCallback((orderId: string) => {
+    console.log("View order:", orderId);
+    // TODO: Navigate to order details
+  }, []);
+
+  const handleMessageCustomer = React.useCallback((orderId: string) => {
+    console.log("Message customer:", orderId);
+    // TODO: Open messaging interface
+  }, []);
+
+  const handleQuickAction = React.useCallback((action: string) => {
+    console.log("Quick action:", action);
+    // TODO: Handle quick action navigation
+  }, []);
+
+  // Calculate total orders for percentage calculation
+  const totalOrders = React.useMemo(
+    () => orderStatusData.reduce((sum, item) => sum + item.value, 0),
+    []
+  );
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-card px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-sans text-foreground">Hey Vendor Name, welcome back 👋</h1>
-            <p className="text-sm text-muted-foreground mt-1">Here's how your store performed this week.</p>
-          </div>
-          {/* <Select defaultValue="7days">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">Last 7 Days</SelectItem>
-              <SelectItem value="30days">Last 30 Days</SelectItem>
-              <SelectItem value="custom">Custom Range</SelectItem>
-            </SelectContent>
-          </Select>  */}
-
-          <div className="flex gap-2">
-  {/* Toggle buttons for desktop */}
-  <ToggleGroup
-    type="single"
-    value={timeRange}
-    onValueChange={(value) => {
-      if (value) setTimeRange(value);
-    }}
-    variant="outline"
-    size="default"
-    className="hidden md:flex"
-  >
-    <ToggleGroupItem value="7days">Last 7 Days</ToggleGroupItem>
-    <ToggleGroupItem value="30days">Last 30 Days</ToggleGroupItem>
-    <ToggleGroupItem value="90days">Last 3 Months</ToggleGroupItem>
-  </ToggleGroup>
-
-  {/* Select dropdown for mobile */}
-  <Select value={timeRange} onValueChange={setTimeRange}>
-    <SelectTrigger className="w-[180px] md:hidden">
-      <SelectValue placeholder="Select time range" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="7days">Last 7 Days</SelectItem>
-      <SelectItem value="30days">Last 30 Days</SelectItem>
-      <SelectItem value="90days">Last 3 Months</SelectItem>
-    </SelectContent>
-  </Select>
-</div>
-        </div>
-      </div>
+      <DashboardHeader
+        vendorName="Vendor Name"
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        timeRangeOptions={timeRangeOptions}
+      />
 
       <div className="p-6">
         <div className="grid gap-6 lg:grid-cols-12">
@@ -138,59 +79,23 @@ export default function Dashboard() {
           <div className="lg:col-span-8 space-y-6">
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <KPICard
-                title="Orders"
-                value="1,230"
-                icon={ShoppingBag}
-                trend={{ value: "+12% from last week", positive: true }}
-                variant="default"
-              />
-              <KPICard
-                title="Sales"
-                value="$24,560"
-                icon={DollarSign}
-                trend={{ value: "+8% from last week", positive: true }}
-                variant="success"
-              />
-              <KPICard
-                title="Customers"
-                value="845"
-                icon={Users}
-                trend={{ value: "+5% from last week", positive: true }}
-                variant="default"
-              />
-              <KPICard
-                title="Net Revenue"
-                value="$18,430"
-                icon={TrendingUp}
-                trend={{ value: "+15% from last week", positive: true }}
-                variant="success"
-              />
+              {kpiData.map((kpi) => {
+                const Icon = kpiIcons[kpi.title as keyof typeof kpiIcons];
+                return (
+                  <KPICard
+                    key={kpi.title}
+                    title={kpi.title}
+                    value={kpi.value}
+                    icon={Icon}
+                    trend={kpi.trend}
+                    variant={kpi.variant}
+                  />
+                );
+              })}
             </div>
 
-            {/* Rating Card */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-muted-foreground">Store Rating</p>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-3xl font-bold">4.8</h3>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-5 w-5 fill-warning text-warning" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">Based on 285 reviews</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-success">92%</p>
-                    <p className="text-sm text-muted-foreground">Positive feedback</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Store Rating */}
+            <StoreRating rating={4.8} totalReviews={285} positiveFeedbackPercent={92} />
 
             {/* Sales & Orders Chart */}
             <Card>
@@ -213,33 +118,7 @@ export default function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={salesData}>
-                    <defs>
-                      <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#9333EA" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#EC4899" stopOpacity={0.05} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" />
-                    <YAxis stroke="hsl(var(--muted-foreground))" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "var(--radius)",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="sales"
-                      stroke="hsl(#salesLineGradient)"
-                      strokeWidth={2}
-                      fill="url(#salesGradient)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <SalesChart data={salesData} />
               </CardContent>
             </Card>
 
@@ -250,42 +129,7 @@ export default function Dashboard() {
                 <CardDescription>Distribution of order statuses</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie
-                        data={orderStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={90}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {orderStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="flex flex-col justify-center space-y-4">
-                    {orderStatusData.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-                          <span className="text-sm font-medium">{item.name}</span>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-bold">{item.value}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {Math.round((item.value / 1230) * 100)}%
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <OrderStatusChart data={orderStatusData} totalOrders={totalOrders} />
               </CardContent>
             </Card>
 
@@ -303,32 +147,7 @@ export default function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {topProducts.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <PackageIcon className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{product.name}</p>
-                          <p className="text-sm text-muted-foreground">{product.orders} orders</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <p className="font-bold text-lg">{product.revenue}</p>
-                        <Badge
-                        className="bg-gradient-to-br from-purple-600 to-pink-500 text-white border-0"
-                        >
-                          {product.status === "available" ? "Available" : "Unavailable"}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <ProductList products={topProducts} />
               </CardContent>
             </Card>
 
@@ -346,38 +165,11 @@ export default function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {recentOrders.map((order, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div>
-                          <p className="font-medium">{order.id}</p>
-                          <p className="text-sm text-muted-foreground">{order.customer}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <p className="font-bold">{order.total}</p>
-                        <Badge className="bg-gradient-to-br from-purple-600 to-pink-500 text-white border-0 capitalize"
-                          >
-                          {order.status}
-                        </Badge>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm" // View buttons in Recent orders section
-                          className=" text-gray-600 border border-gray-300 transition-all duration-300 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:text-white"
-                          >
-                            View
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <MessageCircle className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <RecentOrders
+                  orders={recentOrders}
+                  onViewOrder={handleViewOrder}
+                  onMessageCustomer={handleMessageCustomer}
+                />
               </CardContent>
             </Card>
 
@@ -388,18 +180,7 @@ export default function Dashboard() {
                 <CardDescription>Common tasks and shortcuts</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {quickActions.map((action, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      className="h-auto flex-col gap-2 py-6 hover:bg-primary/5 hover:border-primary transition-colors"
-                    >
-                      <action.icon className="h-6 w-6 text-primary" />
-                      <span className="text-sm font-medium">{action.title}</span>
-                    </Button>
-                  ))}
-                </div>
+                <QuickActions actions={quickActions} onActionClick={handleQuickAction} />
               </CardContent>
             </Card>
           </div>
@@ -408,50 +189,44 @@ export default function Dashboard() {
           <div className="lg:col-span-4 space-y-6">
             <NotificationPanel />
 
-            {/* Bar Chart - Multiple for Revenue vs Orders */}
-  <Card>
-    <CardHeader>
-      <CardTitle>Revenue vs Orders💲</CardTitle>
-      <CardDescription>Weekly performance comparison</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <ChartContainer config={chartConfig}>
-        <BarChart accessibilityLayer data={chartData} height={300}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="day"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="dashed" />}
-          />
-
-          <defs>
-            <linearGradient id="purplePinkGradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#9333ea" /> {/* from-purple-600 */}
-              <stop offset="100%" stopColor="#ec4899" /> {/* to-pink-500 */}
-            </linearGradient>
-        </defs>
-        <Bar dataKey="revenue" fill="url(#purplePinkGradient)" radius={4} />
-        <Bar dataKey="orders" fill="url(#purplePinkGradient)" radius={4} />
-
-          
-        </BarChart>
-      </ChartContainer>
-    </CardContent>
-    <CardFooter className="flex-col items-start gap-2 text-sm">
-      <div className="flex gap-2 leading-none font-medium">
-        Revenue up by 15% this week <TrendingUp className="h-4 w-4" />
-      </div>
-      <div className="text-muted-foreground leading-none">
-        Showing revenue and order count for the current week
-      </div>
-    </CardFooter>
-  </Card>
+            {/* Revenue vs Orders Bar Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue vs Orders💲</CardTitle>
+                <CardDescription>Weekly performance comparison</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <BarChart accessibilityLayer data={chartData} height={300}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="day"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={(value) => value}
+                    />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                    <defs>
+                      <linearGradient id="purplePinkGradient" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#9333ea" />
+                        <stop offset="100%" stopColor="#ec4899" />
+                      </linearGradient>
+                    </defs>
+                    <Bar dataKey="revenue" fill="url(#purplePinkGradient)" radius={4} />
+                    <Bar dataKey="orders" fill="url(#purplePinkGradient)" radius={4} />
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                <div className="flex gap-2 leading-none font-medium">
+                  Revenue up by 15% this week <TrendingUp className="h-4 w-4" />
+                </div>
+                <div className="text-muted-foreground leading-none">
+                  Showing revenue and order count for the current week
+                </div>
+              </CardFooter>
+            </Card>
           </div>
         </div>
       </div>
