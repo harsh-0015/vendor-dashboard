@@ -41,10 +41,12 @@ export function DashboardHeader({
             }}
             variant="outline"
             size="default"
-            className="hidden md:flex"
+            className="hidden md:flex gap-2 max-w-full overflow-hidden"
           >
             {timeRangeOptions.map((option) => (
-              <ToggleGroupItem key={option.value} value={option.value}>
+              <ToggleGroupItem key={option.value} value={option.value}
+              className="text-xs md:text-sm truncate px-2 sm:px-3 max-w-[100px]"
+              >
                 {option.label}
               </ToggleGroupItem>
             ))}
