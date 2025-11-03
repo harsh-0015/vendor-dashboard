@@ -12,7 +12,7 @@ import { useState, useEffect, useRef } from "react";
 import ChatWidget from "./components/ChatWidget";
 import CustomersPage from "./pages/CustomersPage";
 import { useLenisScroll } from "./hooks/use-LenisScroll";
-import ScrollToTop from "./components/ScrolltoTop";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
