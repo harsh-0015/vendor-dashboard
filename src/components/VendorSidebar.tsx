@@ -14,35 +14,53 @@ const menuItems = [
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-export function VendorSidebar() {
+export function VendorSidebar({ isOpen, onClose }) {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const navigate = useNavigate();
 
+  const handleNavClick = () => {
+    // Close sidebar on mobile/tablet when a nav item is clicked
+    if (window.innerWidth < 1024) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed top-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col h-screen ">
+    <div
+      className={`fixed inset-y-0 left-0 flex flex-col w-64 min-h-screen text-white bg-gradient-to-b from-gray-900 to-gray-800 z-40 transition-transform duration-300 ease-in-out
+        lg:translate-x-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}
+    >
       {/* Header */}
       <div className="p-6">
-        <div 
-        onClick={() => navigate('/')} // navigation to home page across the project 
-        className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity select-none">
+        <div
+          onClick={() => {
+            navigate('/');
+            handleNavClick();
+          }}
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity select-none"
+        >
           <div className="h-10 w-10 rounded-lg bg-purple-600 flex items-center justify-center">
             <span className="text-white font-bold text-xl">V</span>
           </div>
           <div>
             <h1 className="text-xl font-bold">Vendor Portal</h1>
-            {/* <p className="text-xs text-gray-400">Dashboard</p> */}
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4">
+      <nav className="flex-1 px-4 overflow-y-auto pb-6">
         {menuItems.map((item) => (
           <NavLink
             key={item.title}
             to={item.url}
             end={item.url === "/"}
-            onClick={() => setActiveMenu(item.title.toLowerCase())}
+            onClick={() => {
+              setActiveMenu(item.title.toLowerCase());
+              handleNavClick();
+            }}
             className={({ isActive }) =>
               `flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
                 isActive
@@ -56,20 +74,6 @@ export function VendorSidebar() {
           </NavLink>
         ))}
       </nav>
-
-      {/* Help Card */}
-      {/* <div className="px-6 pt-0 mb-auto">
-        <div className="bg-gradient-to-br from-purple-600 to-pink-500 rounded-lg p-4">
-          <div className="w-8 h-8 bg-white rounded-lg mb-2 flex items-center justify-center">
-            <span className="text-purple-600 font-bold text-sm">?</span>
-          </div>
-          <h3 className="font-bold mb-1">Need help?</h3>
-          <p className="text-xs mb-3 opacity-90">Please check our docs</p>
-          <button className="bg-white text-gray-800 text-sm px-4 py-2 rounded-lg font-medium w-full hover:bg-gray-100 transition-colors">
-            Documentation
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 }

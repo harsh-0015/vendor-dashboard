@@ -7,14 +7,16 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { VendorSidebar } from "@/components/VendorSidebar";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import { Bell, Settings, ChevronDown, LogOut } from "lucide-react";
+import { Bell, Settings, ChevronDown, LogOut , Menu , X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ChatWidget from "./components/ChatWidget";
 import CustomersPage from "./pages/CustomersPage";
+import { useLenisScroll } from "./hooks/use-LenisScroll";
+import ScrollToTop from "./components/ScrolltoTop";
 
 const queryClient = new QueryClient();
 
-const VendorHeader = () => {
+const VendorHeader = ({isSidebarOpen, setIsSidebarOpen}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const dropdownRef = useRef(null);
@@ -79,11 +81,23 @@ const VendorHeader = () => {
     sessionStorage.removeItem('user');
     window.location.href = '/login'; // Adjustment accordingly
   };
-
+   
   return (
     <div className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-4">
-        <SidebarTrigger />
+        {/* Hamburger Menu Button - Only visible on mobile/tablet */}
+        <button
+        onClick={()=> setIsSidebarOpen(!isSidebarOpen)}
+        className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+        aria-label="Toggle sidebar"
+        >
+          {isSidebarOpen ? (
+            <X className="w-5 h-5 text-gray-600" />
+          ): (
+          <Menu className="w-5 h-5 text-gray-600" />
+          )}
+          </button>
+
         <h2 className="font-semibold">Vendor Portal</h2>
       </div>
       
@@ -159,17 +173,54 @@ const VendorHeader = () => {
   );
 };
 
-const App = () => (
+const App = () => {
+  // state for sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Initialize Lenis smooth scrolling
+  useLenisScroll({
+    duration: 0.8,
+    smoothWheel: true,
+    syncTouch: false,
+    wheelMultiplier: 1.5, //
+  });
+
+  // Close sidebar when screen size changes to desktop
+  useEffect(() => {
+    const handleResize = () =>  {
+      if (window.innerWidth>= 1024) {
+        setIsSidebarOpen(false);
+      }
+    };                                                                              
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);    
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <TooltipProvider>                      
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SidebarProvider>
-          <div className=" min-h-screen flex">
-            <VendorSidebar />
-            <main className="flex-1 ml-64">
-              <VendorHeader />
+          <div className="min-h-screen flex">
+            <VendorSidebar 
+              isOpen={isSidebarOpen} 
+              onClose={() => setIsSidebarOpen(false)} 
+            />
+            
+            {/* Overlay for mobile/tablet - Only shows when sidebar is open */}
+            {isSidebarOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+                onClick={() => setIsSidebarOpen(false)}
+              />
+            )}
+            
+            <main className="ml-0 lg:ml-64 flex-1">
+              <VendorHeader 
+                isSidebarOpen={isSidebarOpen} 
+                setIsSidebarOpen={setIsSidebarOpen} 
+              />
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 {/* Placeholder routes for other pages */}
@@ -185,12 +236,13 @@ const App = () => (
               </Routes>
 
               <ChatWidget />
+              <ScrollToTop/>
             </main>
           </div>
-        </SidebarProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
