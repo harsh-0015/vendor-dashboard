@@ -13,6 +13,8 @@ import ChatWidget from "./components/ChatWidget";
 import CustomersPage from "./pages/CustomersPage";
 import { useLenisScroll } from "./hooks/use-LenisScroll";
 import ScrollToTop from "./components/ScrollToTop";
+import CustomerDetailsPage from "./pages/CustomersDetailsPage";
+
 
 const queryClient = new QueryClient();
 
@@ -227,6 +229,7 @@ const App = () => {
                 <Route path="/orders" element={<Dashboard />} />
                 <Route path="/products" element={<Dashboard />} />
                 <Route path="/customers" element={<CustomersPage />} />
+                <Route path="/customers/new" element={<CustomerDetailsPage />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/messages" element={<Dashboard />} />
                 <Route path="/earnings" element={<Dashboard />} />

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit2, Trash2, Mail, Phone, ShoppingBag, X, DollarSign, Users, TrendingUp, Star, Clock } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Mail, Phone, ShoppingBag, X, DollarSign, Users, TrendingUp, Star, Clock, Maximize2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CustomersPage = () => {
+  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -301,8 +303,11 @@ const CustomersPage = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex gap-2">
-                      <button className="p-2 hover:bg-purple-50 rounded-lg text-purple-600 transition-all">
-                        <Edit2 className="w-4 h-4" />
+                      <button
+                      onClick={() => navigate('/customers/new')} 
+                      className="p-2 hover:bg-purple-50 rounded-lg text-purple-600 transition-all">
+                        <Edit2 
+                        className="w-4 h-4" />
                       </button>
                       <button className="p-2 hover:bg-red-50 rounded-lg text-red-600 transition-all">
                         <Trash2 className="w-4 h-4" />
@@ -318,16 +323,42 @@ const CustomersPage = () => {
 
       {/* Add Customer Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+        onClick={() => setShowAddModal(false)}
+        data-lenis-prevent 
+          // Pop up - closes on backdrop click
+  
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide"
+          onClick={(e) => e.stopPropagation()}
+          data-lenis-prevent
+           
+          >
             <div className="sticky top-0 bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-5 flex justify-between items-center">
+            <div className="flex items-center justify-between flex-1 mr-4">
               <h2 className="text-xl font-bold text-white">Add New Customer</h2>
-              <button 
+              <button
+              type='button'
+              onClick={() => {
+    setShowAddModal(false);  // Close the modal
+    navigate('/customers/new');  // Navigate to details page
+  }}
+              className="hover:opacity-80 transition-opacity duration-200"
+              title='Expand to full details'
+              >
+                <img
+                src='/Maximize icon2.jpg'
+                alt='Expand'
+                className='w-4 h-4'
+                />
+              </button>
+              </div>
+              {/* <button 
                 onClick={() => setShowAddModal(false)} 
                 className="text-white hover:bg-white/20 rounded-lg p-1 transition-all"
               >
                 <X className="w-6 h-6" />
-              </button>
+              </button> */}
             </div>
             <form onSubmit={handleAddCustomer} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -437,7 +468,7 @@ const CustomersPage = () => {
                   ></textarea>
                 </div>
               </div>
-              <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+              <div className="flex justify-end gap-3 mt-6 pt-6 ">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
