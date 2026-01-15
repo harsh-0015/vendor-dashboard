@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Mail, Phone, ShoppingBag, X, DollarSign, Users, TrendingUp, Star, Clock, Maximize2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,6 +53,26 @@ const CustomersPage = () => {
       isReturning: false
     }
   ]);
+
+  // Add this useEffect to load saved customers
+useEffect(() => {
+  const savedCustomers = sessionStorage.getItem('customers');
+  if (savedCustomers) {
+    try {
+      const parsed = JSON.parse(savedCustomers);
+      // Merge mock customers with saved ones
+      setCustomers(prev => {
+        const mockIds = prev.map(c => c.id);
+        const newCustomers = parsed.filter(c => !mockIds.includes(c.id));
+        return [...prev, ...newCustomers];
+      });
+    } catch (error) {
+      console.error('Error loading customers:', error);
+    }
+  }
+}, []);
+
+  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -343,22 +363,18 @@ const CustomersPage = () => {
     setShowAddModal(false);  // Close the modal
     navigate('/customers/new');  // Navigate to details page
   }}
-              className="hover:opacity-80 transition-opacity duration-200"
+              className="hover:opacity-50 transition-opacity duration-200"
               title='Expand to full details'
               >
-                <img
-                src='/Maximize icon2.jpg'
-                alt='Expand'
-                className='w-4 h-4'
-                />
+                <Maximize2 className="w-5 h-5 text-white" />
               </button>
               </div>
-              {/* <button 
+              <button 
                 onClick={() => setShowAddModal(false)} 
                 className="text-white hover:bg-white/20 rounded-lg p-1 transition-all"
               >
                 <X className="w-6 h-6" />
-              </button> */}
+              </button>
             </div>
             <form onSubmit={handleAddCustomer} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
